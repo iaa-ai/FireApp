@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic.list import ListView
-from fire.models import Locations, Incident
+from fire.models import Locations, Incident, FireStation 
 from django.db import connection 
 from django.http import JsonResponse 
 from django.db.models.functions import ExtractMonth 
@@ -43,7 +43,7 @@ def PieCountbySeverity(request):
 def LineCountbyMonth(request):
     current_year = datetime.now().year 
     result = {month: 0 for month in range(1, 13)}
-    incidents_per_month = Incident.objects.filter(date_time__year=current_year) \ .values_list('date_time', flat=True) 
+    incidents_per_month = Incident.objects.filter(date_time__year=current_year) .values_list('date_time', flat=True) 
  
     # Counting the number of incidents per month 
     for date_time in incidents_per_month: 
@@ -160,3 +160,18 @@ def multipleBarbySeverity(request):
         result[level] = dict(sorted(result[level].items()))
  
     return JsonResponse(result)
+
+def map_station(request): 
+     fireStations = FireStation.objects.values('name', 'latitude', 'longitude') 
+ 
+     for fs in fireStations: 
+         fs['latitude'] = float(fs['latitude']) 
+         fs['longitude'] = float(fs['longitude']) 
+ 
+     fireStations_list = list(fireStations)
+ 
+     context = {
+         'fireStations': fireStations_list, 
+     } 
+ 
+     return render(request, 'map_station.html', context)

@@ -12,5 +12,6 @@ urlpatterns = [
     path('dashboard_chart', ChartView.as_view(), name='dashboard-chart'),
     path('chart/', PieCountbySeverity, name='chart'), 
     path('multilineChart/', MultilineIncidentTop3Country, name='chart'), 
-
+    path('multiBarChart/', multipleBarbySeverity, name='chart'), 
+    path('stations', views.map_station, name='map-station'), 
 ]
